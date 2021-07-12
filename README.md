@@ -5,8 +5,7 @@ This guide provides instructions for using Stata on research projects. Its purpo
 
 ## Style
 [The DIME Analytics Data Handbook](https://worldbank.github.io/dime-data-handbook/#download-the-book-in-pdf-format) from the World Bank is an excellent resource for standardization of Stata code (see pages 131 to 146). This a good resources for commenting, whether to abbreviate commands, indendation and more. 
-
-	* Unfortunately, I am not aware of any Stata packages like `styler:style_file()` in R. 
+ * When writing codes within a loop, always use Tab for 4 spaces indentation.  
 
 ## Packages 
 Most Stata packages are hosted on Boston College Statistical Software Components (SSC) archive. It easy to download packages from SSC; simply write `ssc install package` where `package` refers to the package you want to install. 
@@ -14,15 +13,17 @@ Most Stata packages are hosted on Boston College Statistical Software Components
 * Use `reghdfe` for fixed effects regressions
 * Use `ftools` and `gtools` for working with large datasets 
 * Use `randtreat` for randomization
-* There is no package equivalent to the `here()` package in R, but we can use global macros so that our file paths are all relative to global paths. Example below and in the World Bank DIME Handbook: 
+* When generating tables with multiple panels, `regsave` and `texsave` are recommended. 
+* Use global macros so that our file paths are all relative to global paths. Example below and in the World Bank DIME Handbook: 
 ```
 global project_dir = "C:/User/username/Project_Example"
 use "$project_dir/proc/processed.dta" , clear
 ```
 
 ## Folder structure
-Generally, within the folder where we are doing data analysis (the project's "root folder"), we have the following files and folders.
+Use forward slashes for pathnames (`$results/tables` not `$results\tables`) because backslashes are an escape character in Stata(Quoted from [Stata coding tips](https://julianreif.com/guide/#stata_coding_tips)). Avoid spaces and capital letters in file and folder names. 
 
+Generally, within the folder where we are doing data analysis (the project's "root folder"), we have the following files and folders. All the folders should be generated within the do file. 
 
   * data - only raw data go in this folder
   * documentation - documentation about the data go in this folder
@@ -30,10 +31,13 @@ Generally, within the folder where we are doing data analysis (the project's "ro
   * results - results go in this folder
     * figures - subfolder for figures
     * tables - subfolder for tables
+    * logs - subfolder for log files
   * scripts - code goes in this folder
+    * The first script should be a master script `run_all.do`,  which could generate all the required folders and run all the scripts in one time. 	
     * Number scripts in the order in which they should be run
     * programs - a subfolder containing functions called by the analysis scripts. All user-written ado files should be contained in this directory.
     * old - a subfolder where old scripts from previous versions are stored if there are major changes to the structure of the project for cleanliness
+
 
 ## Scripts structure
 Because we often work with large data sets and efficiency is important, I advocate (nearly) always separating the following three actions into different scripts:
@@ -50,6 +54,12 @@ The analysis and figure/table scripts should not change the data sets at all (no
     * To use this, simply write, for example: `scatter price mpg graph_options()`. The default market color is green, but you can change it manually like a normal graphing object by specifying: `scatter price mpg graph_options(), mcolor(pink)`. 
   * For reproducible graphs, always use `ysize(#)` and `xsize(#)` when exporting graphs
   * Use `spmap` for creating maps and plotting spatial data
+  * Use white background for all graphs, `graphregion(color(white))`. 
+  * Use white background and white boundary lines for all legends, `legend(nobox region(lcolor(white))`. 
+
+## Tables
+ * Generate every table automatically from the scripts. 
+ * Generate table with `booktabs` format. 
 
 ## Saving files
 
@@ -61,7 +71,8 @@ The analysis and figure/table scripts should not change the data sets at all (no
   * When dealing with large datasets, there are a couple of things that can make your life easier:
     * Stata reads faster from its native format
     * you can read only a select number of observations or variables
-      * `use [varlist] [if] [in] using filename [,clear nolabel]`
+      * `use [varlist] [if] [in] using filename [,clear nolabel]
+ * When you just want to save your files temporarily for later use, please use `tempfile`. But `tempfile` will not be saved after the program ends. 
       
 #### Graphs
  * Save graphs with `graph export mygraph.eps, repalce`.
@@ -80,8 +91,8 @@ Above I described how data preparation scripts should be separate from analysis 
 
 
 ## Running scripts
- * To run all the commands in a do file sequentially in Stata, click the “Do” button in the top-right corner
- * To run some but not all commands in a do file, highlight the commands that you would like to run and then press the “Do” button
+ * To run all the commands in a do file sequentially in Stata, click the “Do” button in the top-right corner.
+ * To run some but not all commands in a do file, highlight the commands that you would like to run and then press the “Do” button.
 
 
 ## Reproducibility
@@ -89,3 +100,97 @@ Above I described how data preparation scripts should be separate from analysis 
     * Open a log file with `log using filename, text replace` and close a log file at the end of your session with `log close`
     
   * All user written ado files should be kept in the scripts/programs/ folder.
+  * By default, Stata searches for user-written packages in multiple folders. Disabling this behavior ensure that Stata looks for user written-packages only in `scripts/programs`. You could include the below code into the master script, `run_all.do` to remove the non-project folders from the search path: 
+```
+tokenize `"$S_ADO"', parse(";")
+while `"`1'"' != "" {
+  if `"`1'"'!="BASE" cap adopath - `"`1'"'
+  macro shift
+}
+adopath ++ "$MyProject/scripts/programs"
+```
+(Quoted from [Stata coding tips](https://julianreif.com/guide/#stata_coding_tips))
+
+## Version control
+Include `version` statement in the head of the script. Writing `version 16` makes all future versions of Stata to run your code the same way Stata 16 did. (Quoted from [Stata coding tips](https://julianreif.com/guide/#stata_coding_tips))
+### GitHub
+Github is an important tool to maintain version control and for reproducibility purposes. There are many tutorials online, like Grant Mcdermott's slides [here](https://raw.githack.com/uo-ec607/lectures/master/02-git/02-Git.html#9), and I will share some tips from these notes. I will provide instructions for only the most basic commands here. 
+
+We need to first create a git repository or clone an existing one.  
+
+* To clone an existing github repository, use `git pull repolink` where repolink is the link copied from the repository on Github. 
+* To initialize a new repo, use `git init` in the project directory
+
+Once you you have initialized a git repository and you make some local changes, you will want to update the Github repository, so that other collaborators can have access to updated files. To do so, we will use the following process:   
+
+* Check the status: `git status`. I like to use this frequently, in order to see file you've changed and those you still need to add or commit.
+* Add files for staging: `git add <filename>`. Use this to add local changes to the staging area. 
+* Commit: `git commit`. This command saves your changes to the local repository. It will prompt you to add a commit message, which can be more concisley written as `git commit -m "Helpful message"`
+* Push changes to github: assuming there is a Github repository created, use `git push origin master` to push your saved local changes to the Github repo. 
+
+However, there are often times when we encounter merge conflicts. A merge conflict is an event that occurs when Git is unable to automatically resolve differences in code between two commits. For example, if a collaborator edits a piece of code, stages, commits and pushes a change, and you try to push changes for the same piece of code, you will encounter a merge conflict. We need to figure out how fix these conflicts.  
+
+* I like to start with `git status` which shows the conflicted files.
+* If you open up the conflicted files with any text editor, you will see a couple of things. 
+  * `<<<<<<< HEAD` shows the start of the merge conflict.
+  * `=======` shows the break point used for comparison.
+  * `>>>>>>> <long string>` shows the end of merge conflict.
+* You can now manually edit the code and delete whatever lines of code you don't want and the special chanracters that Git added in the file. After that you can stage, commit and push your files without conflict. 
+
+
+### Dropbox
+#### Linking Github and Dropbox for a project
+Here I will present the best methods for linking a project on both Dropbox and Github, which is inspired, but modified from [this tutorial](https://github.com/kbjarkefur/GitHubDropBox)). The RA (or whomever is setting up the project)  should complete ALL of the following steps. Others need to do only the steps marked with (All). Before going ahead, make sure you have both a Github account, a Dropbox account, and the Dropbox app downloaded on your computer. The main idea of this setup is that our Dropbox will serve as an extra clone where we can share new raw data, but the main version control will be done on Github.
+
+1. First, establish the Dropbox folder for the project. Create a Dropbox folder, share it with all project members, and let's call the project we are working on "SampleProject". In this step, we aren't doing anything with Github.
+
+2. The RA will now create a github repo for the project, name it identically to the Dropbox folder and clone it locally to your computer. 
+
+3. (All) Clone the  github repo locally by going to terminal. I will clone this in my home directory. To do so, I would type
+```
+cd noahforougi
+git clone repolink
+``` 
+where repolink is the link copied from the repository page on Github.com. It is important that when you clone this repository, you are doing it in a directory that is not associated with Dropbox. 
+
+4. The next step is to clone the repository again, but this time **in the local Dropbox directory**. So, for example, say I have cloned the project in this directory `/Users/noahforougi/SampleProject/`. I will now change the directory to my Dropbox directory and clone the Github repo to the Dropbox. 
+```
+cd /Dropbox/SampleProject/
+git clone repolink
+```
+
+5. Now, we want to create a more formal project structure. To do so, we are going to edit the Dropbox directly (we will only be doing this once!). Follow the conventions mentioned earlier in this guide, create the project on Dropbox, but **exclude the proc** folder. The dropbox should look something like this:
+- Dropbox/
+  - SampleProject/
+    - data/
+    - documentation/
+    - README.md
+    - results/
+    - scripts/
+    
+6. (All) We want the Dropbox project structure (which the RA has created) on our local repo which is synched with Github(in my case, the /Users/noahforougi/ directory). We will only have to do this once, but we are going to manually copy and paste all the folders into our local repo. Additionally, create a proc/ folder locally. This allows us to share **raw** data via Dropbox, but the **processed** data will be generated by actually running the scripts locally. Our project should look like this: 
+- noahforougi/
+  - SampleProject/
+    - data/
+    - proc/
+    - documentation/
+    - README.md
+    - results/
+    - scripts/
+    
+7. (All) We want to create a .gitignore file in the local directory. This means when we push our local changes to Github, we are ignoring the data/, proc/ and documentation/ folders. This is crucial because of data confidentiality reasons. There are plenty of tutorials online about how to create a .gitignore file. In the gitignore file please include the following:
+ 
+  /documentation/* <br>
+  /data/* <br>
+  /proc/*
+ 
+8. Now, go back into the Dropbox folder and repeat this step. We need to create a .gitignore file in the Dropbox as well.
+
+Our project structure is complete. We can now make local edits to the scripts and results and push them to Github. All other project members will be able to receive these changes and update their local proc/ files by running the newly synched scripts. The main interactions should be to push local edits to Github. You should **not** be making edits to the scripts located on the Dropbox. If we want to share new raw data, we will need to copy and paste that locally, but it will not cause issues because of the .gitignore file. 
+
+## Misc.
+
+Some additional tips:
+
+* Error handling: use `set trace on`. 
+* You could put the code into a loop `if 1 {}`. If you do not want to run the code in this loop, you can just change it to `if 0 {}`. When the whole script is finished, you can delete all the `if 1 {}` and `if 0 {}`. 
