@@ -99,17 +99,13 @@ Above I described how data preparation scripts should be separate from analysis 
   * Start your do files by opening a log file; this records all commands and output in a session and can be helpful to look back on the work for a particular project
     * Open a log file with `log using filename, text replace` and close a log file at the end of your session with `log close`
     
-  * All user written ado files should be kept in the scripts/programs/ folder.
-  * By default, Stata searches for user-written packages in multiple folders. Disabling this behavior ensure that Stata looks for user written-packages only in `scripts/programs`. You could include the below code into the master script, `run_all.do` to remove the non-project folders from the search path: 
-```
-tokenize `"$S_ADO"', parse(";")
-while `"`1'"' != "" {
-  if `"`1'"'!="BASE" cap adopath - `"`1'"'
-  macro shift
-}
-adopath ++ "$MyProject/scripts/programs"
-```
-(Quoted from [Stata coding tips](https://julianreif.com/guide/#stata_coding_tips))
+  * All user written ado files should be kept in the `scripts/programs`.
+  * At the beginning of the master script, `run_all.do`, add `adopath ++ "$project_dir/scripts/programs"`. Whenever you open the Stata and you know you will install packages later, you should type below code, 
+    ```
+    sysdir set PLUS "$project_dir/scripts/programs"
+    sysdir set PERSONAL $project_dir/scripts/programs"
+    ```
+    The above procedures will let Stata searches for user written ado files in  the folder `scripts/programs`. But the `PLUS` and `PERSONAL` paths you set will be automatically removed when you start a new Stata session. So you need to do it every time you open the Stata and you know you will install packages. You just need to do it once in one Stata session. 
 
 ## Version control
 Include `version` statement in the head of the script. Writing `version 16` makes all future versions of Stata to run your code the same way Stata 16 did. (Quoted from [Stata coding tips](https://julianreif.com/guide/#stata_coding_tips))
