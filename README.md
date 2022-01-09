@@ -92,10 +92,10 @@ When randomizing assignment in a randomized control trial (RCT):
 * Make sure the Stata version is set in the `00_run.do` script, as described above. This ensures that the randomization algorithm is the same, since the randomization algorithm sometimes changes between Stata versions. 
 
 * Use `randtreat` for randomization 
-  * You can install the most up to date version of the program with
- ```stata
- net install randtreat, from("https://raw.github.com/acarril/randtreat/master/") replace
- ```
+	* You can install the most up to date version of the program with
+	```stata
+	net install randtreat, from("https://raw.github.com/acarril/randtreat/master/") replace
+	```
   
 Above I described how data preparation scripts should be separate from analysis scripts. Randomization scripts should also be separate from data preparation scripts, i.e. any data preparation needed as an input to the randomization should be done in one script and the randomization script itself should read in the input data, create a variable with random assignments, and save a data set with the random assignments.
 
