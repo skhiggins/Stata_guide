@@ -3,11 +3,11 @@
 This guide provides instructions for using Stata on research projects. Its purpose is to use with collaborators and research assistants to make code consistent, easier to read, transparent, and reproducible.
 
 ## Style
-For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html). There are two places where I recommend deviating from this style guide:
+For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html). There are a few places where I recommend deviating from this style guide:
 
-* `#delimit ;` can be used when there is code that takes up many lines, such as a long local macro where it is preferable to list each element of the list vertically rather than horizontally since this is easier to read. However, this should only be used for the code that takes up many lines, and immediately afterwards `#delimit cr` should be included to go back to not needing to include `;` at the end of each line.
 * Use the boilerplate described below in the `00_run.do` script to ensure a fresh Stata session when running scripts, rather than using [`ieboilstart`](https://github.com/worldbank/ietoolkit/blob/master/src/ado_files/ieboilstart.ado).
-* Use `//` for both single-line comments and in-line comments. Using the same characters for both types of comments more closely matches what other programming languages do (e.g. `#` for both types of comments in R and Python), and it ensures that various text editors can identify comments. (The problem with using `*` for single-line comments is that `*` is also used for multiplication and this can confuse some text editors' syntax highlighting.)
+* `#delimit ;` can be used when there is code that takes up many lines, such as a long local macro where it is preferable to list each element of the list vertically rather than horizontally since this is easier to read. However, this should only be used for the code that takes up many lines, and immediately afterwards `#delimit cr` should be included to go back to not needing to include `;` at the end of each line.
+* Use `//` for both single-line comments and in-line comments. Using the same characters for both types of comments more closely matches what other statistical programming languages do (e.g. `#` for both types of comments in R and Python), and it ensures that various text editors' syntax highlighting can identify comments. (The problem with using `*` for single-line comments is that `*` is also used for multiplication and this can confuse some text editors' syntax highlighting.)
 
 ## Packages 
 Most user-written Stata packages are hosted on Boston College Statistical Software Components (SSC) archive. It easy to download packages from SSC; simply run `ssc install package` where `package` should be replaced with the name of the package you want to install. 
@@ -96,30 +96,37 @@ When randomizing assignment in a randomized control trial (RCT):
 * Make sure the Stata version is set in the `00_run.do` script, as described above. This ensures that the randomization algorithm is the same, since the randomization algorithm sometimes changes between Stata versions. 
 
 * Use `randtreat` for randomization 
+	<!--- commented this out since it's on SSC
 	* You can install the most up to date version of the program with
 	```stata
 	net install randtreat, from("https://raw.github.com/acarril/randtreat/master/") replace
 	```
+	--->
   
 Above I described how data preparation scripts should be separate from analysis scripts. Randomization scripts should also be separate from data preparation scripts, i.e. any data preparation needed as an input to the randomization should be done in one script and the randomization script itself should read in the input data, create a variable with random assignments, and save a data set with the random assignments.
 
 ## Running scripts
- * To run all the commands in a do file sequentially in Stata, click the “Do” button in the top-right corner.
- * To run some but not all commands in a do file, highlight the commands that you would like to run and then press the “Do” button.
+Once you complete a script, which you might be running line by line while you work on it, make sure the script works on a fresh Stata session. To do this, adjust the local macros in `00_run.do` to run the appropriate scripts (i.e., set the local macros for the scripts you want to run to 1, and the local macros for the scripts you do not want to run to 0), and run the entire `00_run.do` file. The boilerplate code in `00_run.do` will ensure that you are running the code in a nearly-fresh Stata session.
 
 ## Reproducibility
-* Include a `version` statement in the `00_run.do` script. For example, writing `version 16.1` makes all future versions of Stata run your code the same way Stata 16.1 did.
+* As shown above, include a `version` statement in the `00_run.do` script. For example, writing `version 16.1` makes all future versions of Stata run your code the same way Stata 16.1 did.
 
-* Start your do files by opening a log file; this records all commands and output in a session and can be helpful to look back on the work for a particular project
-    * Open a log file with `log using filename, text replace` and close a log file at the end of your session with `log close`
+* Start your do files by opening a log file; this records all commands and output in a session and can be helpful to look back at the output from a particular script.
+	* Name the log files using the same naming convention as you use for your scripts. For example the log file for 01_ex_dataprep.do should be 01_ex_dataprep.log.
+	* Use the `text` option so that log files are saved as plain text rather than in Stata Markdown Command Language (SMCL). This ensures that they can be easily viewed in any text editor.
+	* Start a log with `log using`, for example:
+	```stata
+	log using "$results/logs/01_ex_dataprep.log", text replace
+	```
+  * Close a log file at the end of the script with `log close`.
     
-* All user written ado files should be kept in the `scripts/programs`.
-* At the beginning of the master script, `run_all.do`, add `adopath ++ "$project_dir/scripts/programs"`. Whenever you open the Stata and you know you will install packages later, you should type below code, 
+* All user-written ado files should be kept in the `scripts/programs`.
+* At the beginning of the master script, `00_run.do`, add `adopath ++ "$main/scripts/programs"`. Whenever you open the Stata and you know you will install packages later, you should type below code, 
 	```
-	sysdir set PLUS "$project_dir/scripts/programs"
-	sysdir set PERSONAL $project_dir/scripts/programs"
+	sysdir set PLUS "$main/scripts/programs"
+	sysdir set PERSONAL $main/scripts/programs"
 	```
-	The above procedures will let Stata searches for user written ado files in  the folder `scripts/programs`. But the `PLUS` and `PERSONAL` paths you set will be automatically removed when you start a new Stata session. So you need to do it every time you open the Stata and you know you will install packages. You just need to do it once in one Stata session. 
+	The above procedures will tell Stata to search for user written ado files in  the folder `scripts/programs`. But the `PLUS` and `PERSONAL` paths you set will be automatically removed when you start a new Stata session. So you need to do it every time you open the Stata and you know you will install packages. You just need to do it once in one Stata session. 
 		
 
 ## Version control
@@ -203,10 +210,22 @@ Our project structure is complete. We can now make local edits to the scripts an
 
 Some additional tips:
 
-* Error handling: use `set trace on`. 
-* To run portions of code while you are programming, you can set local macros at the top of the do file and then use `if` conditions to only run some of the chunks of code. This is preferable to highlighting sections of code in the do file and running just those lines. For example:
+	* For debugging, use `set trace on` before running the script. This will show you how Stata is interpreting your code and can help you find the bug.
+		* `set tracedepth` is also useful to control how deep into each command's code the trace feature will go. The default when you `set trace on` is `set tracedepth 32000`. If you don't want to print so much of the code Stata is interpreting as it goes through your script, you can use for example `set tracedepth 2`.
+	* To run portions of code while you are programming, you can set local macros at the top of the do file and then use `if` conditions to only run some of the chunks of code. This is preferable to highlighting sections of code in the do file and running just those lines. For example:
 	```stata
 	// Set local macros
-	local 
+	local cleaning  = 0
+	local reshape   = 1
 
- `if 1 {}`. If you do not want to run the code in this loop, you can just change it to `if 0 {}`. When the whole script is finished, you can delete all the `if 1 {}` and `if 0 {}`. 
+	// Code
+	use "$data/ex_data.dta", clear
+
+	if `cleaning' == 1 {
+		// Clean the data
+	}
+	if `reshape' == 1 {
+		// Reshape the data
+	}
+	```
+		* In the final replication package, all of these local macros and `if` conditions should either be removed or all set to 1 so that all of the code runs in the replication package without the user needing to adjust the local macros.
