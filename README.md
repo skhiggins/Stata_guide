@@ -7,6 +7,7 @@ For coding style practices, follow the [DIME Analytics Coding Guide](  https://w
 
 * `#delimit ;` can be used when there is code that takes up many lines, such as a long local macro where it is preferable to list each element of the list vertically rather than horizontally since this is easier to read. However, this should only be used for the code that takes up many lines, and immediately afterwards `#delimit cr` should be included to go back to not needing to include `;` at the end of each line.
 * Use the boilerplate described below in the `00_run.do` script to ensure a fresh Stata session when running scripts, rather than using [`ieboilstart`](https://github.com/worldbank/ietoolkit/blob/master/src/ado_files/ieboilstart.ado).
+* Use `//` for both single-line comments and in-line comments. Using the same characters for both types of comments more closely matches what other programming languages do (e.g. `#` for both types of comments in R and Python), and it ensures that various text editors can identify comments. (The problem with using `*` for single-line comments is that `*` is also used for multiplication and this can confuse some text editors' syntax highlighting.)
 
 ## Packages 
 Most user-written Stata packages are hosted on Boston College Statistical Software Components (SSC) archive. It easy to download packages from SSC; simply run `ssc install package` where `package` should be replaced with the name of the package you want to install. 
@@ -203,4 +204,9 @@ Our project structure is complete. We can now make local edits to the scripts an
 Some additional tips:
 
 * Error handling: use `set trace on`. 
-* You could put the code into a loop `if 1 {}`. If you do not want to run the code in this loop, you can just change it to `if 0 {}`. When the whole script is finished, you can delete all the `if 1 {}` and `if 0 {}`. 
+* To run portions of code while you are programming, you can set local macros at the top of the do file and then use `if` conditions to only run some of the chunks of code. This is preferable to highlighting sections of code in the do file and running just those lines. For example:
+	```stata
+	// Set local macros
+	local 
+
+ `if 1 {}`. If you do not want to run the code in this loop, you can just change it to `if 0 {}`. When the whole script is finished, you can delete all the `if 1 {}` and `if 0 {}`. 
