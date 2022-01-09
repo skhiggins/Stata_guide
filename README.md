@@ -4,7 +4,7 @@ This guide provides instructions for using Stata on research projects. Its purpo
 
 
 ## Style
-For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html)
+For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html).
 
 ## Packages 
 Most user-written Stata packages are hosted on Boston College Statistical Software Components (SSC) archive. It easy to download packages from SSC; simply run `ssc install package` where `package` should be replaced with the name of the package you want to install. 
@@ -15,7 +15,7 @@ Most user-written Stata packages are hosted on Boston College Statistical Softwa
 * When generating tables with multiple panels, `regsave` and `texsave` are recommended. 
 * Never use `cd` to manually change the directory. Unfortunately Stata does not have a package to work with relative filepaths (like `here` in R or `pyprojroot` in Python). Instead, the `00_run.do` script (described below) should define a global macro for the project's root directory and (optionally) global macros for its immediate subdirectories. Then, since scripts should always be run through the `00_run.do` script, all other do files should not define full absolute paths but instead should specify absolute paths using the global macro for the root directory that was defined in `00_run.do`.
 	* This ensures that when others run the project code, they only need to change the file path in one place. 
-	* Within project teams, you can include a chunk of code in `00_run.do` that automatically determines which team member's computer or which server is running the code using `if` conditions with ``c(username)'`. This is described in more detail below in the example `00_run.do` script. However, for the replication package a user outside the team would still need to manually enter the file path of the project's root directory. This should require editing only one line of code in `00_run.do` and no code in any other do files.
+	* Within project teams, you can include a chunk of code in `00_run.do` that automatically determines which team member's computer or which server is running the code using `if` conditions with ```c(username)'``. This is described in more detail below in the example `00_run.do` script. However, for the replication package a user outside the team would still need to manually enter the file path of the project's root directory. This should require editing only one line of code in `00_run.do` and no code in any other do files.
 
 ## Folder structure
 Use forward slashes for pathnames (`$results/tables` not `$results\tables`). This ensures that  Avoid spaces and capital letters in file and folder names. 
