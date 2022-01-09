@@ -3,10 +3,10 @@
 This guide provides instructions for using Stata on research projects. Its purpose is to use with collaborators and research assistants to make code consistent, easier to read, transparent, and reproducible.
 
 ## Style
-For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html). There are two places where my teams should differ from this style guide:
+For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html). There are two places where I recommend deviating from this style guide:
 
 * `#delimit ;` can be used when there is code that takes up many lines, such as a long local macro where it is preferable to list each element of the list vertically rather than horizontally since this is easier to read. However, this should only be used for the code that takes up many lines, and immediately afterwards `#delimit cr` should be included to go back to not needing to include `;` at the end of each line.
-* Use the boilerplate described below in the `00_run.do` script to ensure a fresh Stata session when running scripts, rather than using `[ieboilstart](https://github.com/worldbank/ietoolkit/blob/master/src/ado_files/ieboilstart.ado)`.
+* Use the boilerplate described below in the `00_run.do` script to ensure a fresh Stata session when running scripts, rather than using [`ieboilstart`](https://github.com/worldbank/ietoolkit/blob/master/src/ado_files/ieboilstart.ado).
 
 ## Packages 
 Most user-written Stata packages are hosted on Boston College Statistical Software Components (SSC) archive. It easy to download packages from SSC; simply run `ssc install package` where `package` should be replaced with the name of the package you want to install. 
