@@ -4,24 +4,21 @@ This guide provides instructions for using Stata on research projects. Its purpo
 
 
 ## Style
-[The DIME Analytics Data Handbook](https://worldbank.github.io/dime-data-handbook/#download-the-book-in-pdf-format) from the World Bank is an excellent resource for standardization of Stata code (see pages 131 to 146). This a good resources for commenting, whether to abbreviate commands, indendation and more. 
- * When writing codes within a loop, always use Tab for 4 spaces indentation.  
+For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html)
 
 ## Packages 
-Most Stata packages are hosted on Boston College Statistical Software Components (SSC) archive. It easy to download packages from SSC; simply write `ssc install package` where `package` refers to the package you want to install. 
+Most user-written Stata packages are hosted on Boston College Statistical Software Components (SSC) archive. It easy to download packages from SSC; simply run `ssc install package` where `package` should be replaced with the name of the package you want to install. 
 
 * Use `reghdfe` for fixed effects regressions
 * Use `ftools` and `gtools` for working with large datasets 
 * Use `randtreat` for randomization
 * When generating tables with multiple panels, `regsave` and `texsave` are recommended. 
-* Use global macros so that our file paths are all relative to global paths. Example below and in the World Bank DIME Handbook: 
-```
-global project_dir = "C:/User/username/Project_Example"
-use "$project_dir/proc/processed.dta" , clear
-```
+* Never use `cd` to manually change the directory. Unfortunately Stata does not have a package to work with relative filepaths (like `here` in R or `pyprojroot` in Python). Instead, the `00_run.do` script (described below) should define a global macro for the project's root directory and (optionally) global macros for its immediate subdirectories. Then, since scripts should always be run through the `00_run.do` script, all other do files should not define full absolute paths but instead should specify absolute paths using the global macro for the root directory that was defined in `00_run.do`.
+	* This ensures that when others run the project code, they only need to change the file path in one place. 
+	* Within project teams, you can include a chunk of code in `00_run.do` that automatically determines which team member's computer or which server is running the code using `if` conditions with ``c(username)'`. This is described in more detail below in the example `00_run.do` script. However, for the replication package a user outside the team would still need to manually enter the file path of the project's root directory. This should require editing only one line of code in `00_run.do` and no code in any other do files.
 
 ## Folder structure
-Use forward slashes for pathnames (`$results/tables` not `$results\tables`) because backslashes are an escape character in Stata(Quoted from [Stata coding tips](https://julianreif.com/guide/#stata_coding_tips)). Avoid spaces and capital letters in file and folder names. 
+Use forward slashes for pathnames (`$results/tables` not `$results\tables`). This ensures that  Avoid spaces and capital letters in file and folder names. 
 
 Generally, within the folder where we are doing data analysis (the project's "root folder"), we have the following files and folders. All the folders should be generated within the do file. 
 
@@ -33,11 +30,8 @@ Generally, within the folder where we are doing data analysis (the project's "ro
     * tables - subfolder for tables
     * logs - subfolder for log files
   * scripts - code goes in this folder
-    * The first script should be a master script `run_all.do`,  which could generate all the required folders and run all the scripts in one time. 	
-    * Number scripts in the order in which they should be run
     * programs - a subfolder containing functions called by the analysis scripts. All user-written ado files should be contained in this directory.
     * old - a subfolder where old scripts from previous versions are stored if there are major changes to the structure of the project for cleanliness
-
 
 ## Scripts structure
 Because we often work with large data sets and efficiency is important, I advocate (nearly) always separating the following three actions into different scripts:
