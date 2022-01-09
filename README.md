@@ -3,7 +3,10 @@
 This guide provides instructions for using Stata on research projects. Its purpose is to use with collaborators and research assistants to make code consistent, easier to read, transparent, and reproducible.
 
 ## Style
-For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html).
+For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html). There are two places where my teams should differ from this style guide:
+
+* `#delimit ;` can be used when there is code that takes up many lines, such as a long local macro where it is preferable to list each element of the list vertically rather than horizontally since this is easier to read. However, this should only be used for the code that takes up many lines, and immediately afterwards `#delimit cr` should be included to go back to not needing to include `;` at the end of each line.
+* Use the boilerplate described below in the `00_run.do` script to ensure a fresh Stata session when running scripts, rather than using `[ieboilstart](https://github.com/worldbank/ietoolkit/blob/master/src/ado_files/ieboilstart.ado)`.
 
 ## Packages 
 Most user-written Stata packages are hosted on Boston College Statistical Software Components (SSC) archive. It easy to download packages from SSC; simply run `ssc install package` where `package` should be replaced with the name of the package you want to install. 
@@ -99,11 +102,9 @@ When randomizing assignment in a randomized control trial (RCT):
   
 Above I described how data preparation scripts should be separate from analysis scripts. Randomization scripts should also be separate from data preparation scripts, i.e. any data preparation needed as an input to the randomization should be done in one script and the randomization script itself should read in the input data, create a variable with random assignments, and save a data set with the random assignments.
 
-
 ## Running scripts
  * To run all the commands in a do file sequentially in Stata, click the “Do” button in the top-right corner.
  * To run some but not all commands in a do file, highlight the commands that you would like to run and then press the “Do” button.
-
 
 ## Reproducibility
 * Include a `version` statement in the `00_run.do` script. For example, writing `version 16.1` makes all future versions of Stata run your code the same way Stata 16.1 did.
