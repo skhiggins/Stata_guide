@@ -13,14 +13,6 @@ Most user-written Stata packages are hosted on Boston College Statistical Softwa
 * Use `randtreat` for randomization
 * When generating tables with multiple panels, `regsave` and `texsave` are recommended. 
 
-## Filepaths
-* Use forward slashes for filepath names (`$results/tables` not `$results\tables`). This ensures that the code works across multiple operating systems, and avoids issues that arise due to the backslash being used as an escape character. 
-* Avoid spaces and capital letters in file and folder names.
-* Never use `cd` to manually change the directory. Unfortunately Stata does not have a package to work with relative filepaths (like `here` in R or `pyprojroot` in Python). Instead, the `00_run.do` script (described below) should define a global macro for the project's root directory and (optionally) global macros for its immediate subdirectories. Then, since scripts should always be run through the `00_run.do` script, all other do files should not define full absolute paths but instead should specify absolute paths using the global macro for the root directory that was defined in `00_run.do`.
-	* This ensures that when others run the project code, they only need to change the file path in one place. 
-	* Within project teams, you can include a chunk of code in `00_run.do` that automatically determines which team member's computer or which server is running the code using `if` conditions with ``"`c(username)'"``. This is described in more detail below in the example `00_run.do` script below. 
-	* However, for the replication package a user outside the team would still need to manually edit the file path of the project's root directory. This should require editing only __one line of code__ in `00_run.do` and not editing any code in any other do files.
-
 ## Folder structure
 
 Generally, within the folder where we are doing data analysis (the project's "root folder"), we have the following files and folders. All the folders should be generated within the do file. 
@@ -34,9 +26,19 @@ Generally, within the folder where we are doing data analysis (the project's "ro
     * logs - subfolder for log files
   * scripts - code goes in this folder. The scripts needed to go from raw data to final results are stored directly in the scripts folder.
     * programs - a subfolder containing functions called by the analysis scripts. All user-written ado files should be contained in this directory.
-    * old - a subfolder where old scripts are stored if there are major changes to the structure of the project. Scripts in `old` are not used to go from raw data to final results, but are kept here while the project is ongoing in case they need to be used or referred back to in the future. The old subfolder is not included in the replication package since the scripts in this subfolder are not part of the analysis.
+    * old - a subfolder where old scripts are stored if there are major changes to the structure of the project. Scripts in the old subfolder are not used to go from raw data to final results, but are kept here while the project is ongoing in case they need to be used or referred back to in the future. The old subfolder is not included in the replication package since the scripts in this subfolder are not part of the process of going from raw data to final results.
+		
+## Filepaths
+* Use forward slashes for filepath names (`$results/tables` not `$results\tables`). This ensures that the code works across multiple operating systems, and avoids issues that arise due to the backslash being used as an escape character. 
+* Avoid spaces and capital letters in file and folder names.
+* Never use `cd` to manually change the directory. Unfortunately Stata does not have a package to work with relative filepaths (like `here` in R or `pyprojroot` in Python). Instead, the `00_run.do` script (described below) should define a global macro for the project's root directory and (optionally) global macros for its immediate subdirectories. Then, since scripts should always be run through the `00_run.do` script, all other do files should not define full absolute paths but instead should specify absolute paths using the global macro for the root directory that was defined in `00_run.do`.
+	* This ensures that when others run the project code, they only need to change the file path in one place. 
+	* Within project teams, you can include a chunk of code in `00_run.do` that automatically determines which team member's computer or which server is running the code using `if` conditions with ``"`c(username)'"``. This is described in more detail below in the example `00_run.do` script below. 
+	* However, for the replication package a user outside the team would still need to manually edit the file path of the project's root directory. This should require editing only __one line of code__ in `00_run.do` and not editing any code in any other do files.
 
 ## Scripts structure
+
+### Separating scripts
 Because we often work with large data sets and efficiency is important, I advocate (nearly) always separating the following three actions into different scripts:
 
   1. Data preparation (cleaning and wrangling)
@@ -45,6 +47,9 @@ Because we often work with large data sets and efficiency is important, I advoca
   
 The analysis and figure/table scripts should not change the data sets at all (no pivoting from wide to long or adding new variables); all changes to the data should be made in the data cleaning scripts. The figure/table scripts should not run the regressions or perform other analysis; that should be done in the analysis scripts. This way, if you need to add a robustness check, you don't necessarily have to rerun all the data cleaning code (unless the robustness check requires defining a new variable). If you need to make a formatting change to a figure, you don't have to rerun all the analysis code (which can take awhile to run on large data sets).
 
+### Naming scripts
+
+### 00_run.do script
 
 ## Graphing
   * Sean wrote an .ado file called graph_options.ado to control the formatting of graphs in stata 
@@ -54,13 +59,15 @@ The analysis and figure/table scripts should not change the data sets at all (no
   * Use white background for all graphs, `graphregion(color(white))`. 
   * Use white background and white boundary lines for all legends, `legend(nobox region(lcolor(white))`. 
 
+<!---
 ## Tables
  * Generate every table automatically from the scripts. 
  * Generate table with `booktabs` format. 
+--->
 
 ## Saving files
 
-#### Datasets
+#### Data sets
   * Use the Stata commands `save file.dta` and `use file.dta` when saving and reading in data 
     * To write over a file that already exists, use the `replace` option
     * To clear out memory when reading in a dataset, use the `clear` option
@@ -72,17 +79,23 @@ The analysis and figure/table scripts should not change the data sets at all (no
  * When you just want to save your files temporarily for later use, please use `tempfile`. But `tempfile` will not be saved after the program ends. 
       
 #### Graphs
- * Save graphs with `graph export mygraph.eps, repalce`.
-    * Set graph width and height dimensions in pixes with width and height options (i.e width(600)  height(400))
+* Save graphs with `graph export $results/figures/example_graph.eps, replace`, where `example_graph` would be replaced by the file name of the graph.
+	* For reproducible graphs, always specify the width and height dimensions in pixels using the `width` and `height` options (e.g. `width(600) height(400)`).
+  * To see what the final graph looks like, open the file that you save since its appearance will differ from what you see in the RStudio Plots pane when you specify the `width` and `height` arguments in `ggsave()`.
+* For higher (in fact, infinite) resolution, save graphs as .eps files. (This is better than .pdf given that .eps are editable images, which is sometimes required by journals.)
+  * I've written a Python function [`crop_eps`](https://github.com/skhiggins/PythonTools/blob/master/crop_eps.py) to crop (post-process) .eps files when you can't get the cropping just right in Stata.
       
 ## Randomization
 When randomizing assignment in a randomized control trial (RCT):
 * Seed: Use a seed from https://www.random.org/: put Min 1 and Max 100000000, then click Generate, and copy the result into your script. Towards the top of the script, assign the seed with the line
 `set seed ... # from random.org`
-* Set Stata version: this ensures that the randomization algorithm is the same, since the randomization algorithm sometimes changes between Stata versions. See [`ieboilstart`](https://dimewiki.worldbank.org/wiki/Ieboilstart) for boilerplate code that standardizes Stata version within do files.
+* Make sure the Stata version is set in the `00_run.do` script, as described above. This ensures that the randomization algorithm is the same, since the randomization algorithm sometimes changes between Stata versions. 
 
 * Use `randtreat` for randomization 
-  * You can install the most up to date version of the program directly from github: `net install randtreat, from("https://raw.github.com/acarril/randtreat/master/") replace`
+  * You can install the most up to date version of the program with
+ ```stata
+ net install randtreat, from("https://raw.github.com/acarril/randtreat/master/") replace
+ ```
   
 Above I described how data preparation scripts should be separate from analysis scripts. Randomization scripts should also be separate from data preparation scripts, i.e. any data preparation needed as an input to the randomization should be done in one script and the randomization script itself should read in the input data, create a variable with random assignments, and save a data set with the random assignments.
 
@@ -93,19 +106,22 @@ Above I described how data preparation scripts should be separate from analysis 
 
 
 ## Reproducibility
-  * Start your do files by opening a log file; this records all commands and output in a session and can be helpful to look back on the work for a particular project
+* Include a `version` statement in the `00_run.do` script. For example, writing `version 16.1` makes all future versions of Stata run your code the same way Stata 16.1 did.
+
+* Start your do files by opening a log file; this records all commands and output in a session and can be helpful to look back on the work for a particular project
     * Open a log file with `log using filename, text replace` and close a log file at the end of your session with `log close`
     
-  * All user written ado files should be kept in the `scripts/programs`.
-  * At the beginning of the master script, `run_all.do`, add `adopath ++ "$project_dir/scripts/programs"`. Whenever you open the Stata and you know you will install packages later, you should type below code, 
-    ```
-    sysdir set PLUS "$project_dir/scripts/programs"
-    sysdir set PERSONAL $project_dir/scripts/programs"
-    ```
-    The above procedures will let Stata searches for user written ado files in  the folder `scripts/programs`. But the `PLUS` and `PERSONAL` paths you set will be automatically removed when you start a new Stata session. So you need to do it every time you open the Stata and you know you will install packages. You just need to do it once in one Stata session. 
+* All user written ado files should be kept in the `scripts/programs`.
+* At the beginning of the master script, `run_all.do`, add `adopath ++ "$project_dir/scripts/programs"`. Whenever you open the Stata and you know you will install packages later, you should type below code, 
+	```
+	sysdir set PLUS "$project_dir/scripts/programs"
+	sysdir set PERSONAL $project_dir/scripts/programs"
+	```
+	The above procedures will let Stata searches for user written ado files in  the folder `scripts/programs`. But the `PLUS` and `PERSONAL` paths you set will be automatically removed when you start a new Stata session. So you need to do it every time you open the Stata and you know you will install packages. You just need to do it once in one Stata session. 
+		
 
 ## Version control
-Include `version` statement in the head of the script. Writing `version 16` makes all future versions of Stata to run your code the same way Stata 16 did. (Quoted from [Stata coding tips](https://julianreif.com/guide/#stata_coding_tips))
+
 ### GitHub
 Github is an important tool to maintain version control and for reproducibility purposes. There are many tutorials online, like Grant Mcdermott's slides [here](https://raw.githack.com/uo-ec607/lectures/master/02-git/02-Git.html#9), and I will share some tips from these notes. I will provide instructions for only the most basic commands here. 
 
