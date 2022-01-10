@@ -190,25 +190,25 @@ if (`04_ex_graph' == 1) do "$scripts/04_ex_graph.do"
  * When you just want to save your files temporarily for later use, please use `tempfile`. But `tempfile` will not be saved after the program ends. 
       
 #### Graphs
-* Save graphs with `graph export $results/figures/example_graph.eps, replace`, where `example_graph` would be replaced by the file name of the graph.
+* Save graphs with `graph export`.
     * For reproducible graphs, always specify the width and height dimensions in pixels using the `width` and `height` options (e.g. `width(600) height(400)`).
-  * To see what the final graph looks like, open the file that you save since its appearance will differ from what you see in Stata graphs pane when you specify the `width` and `height` arguments in `graph export`.
+* To see what the final graph looks like, open the file that you save since its appearance will differ from what you see in Stata graphs pane when you specify the `width` and `height` arguments in `graph export`.
 * For higher (in fact, infinite) resolution, save graphs as .eps files. (This is better than .pdf given that .eps are editable images, which is sometimes required by journals.)
   * I've written a Python function [`crop_eps`](https://github.com/skhiggins/PythonTools/blob/master/crop_eps.py) to crop (post-process) .eps files when you can't get the cropping just right in Stata.
       
 ## Randomization
 When randomizing assignment in a randomized control trial (RCT):
 * Seed: Use a seed from https://www.random.org/: put Min 1 and Max 100000000, then click Generate, and copy the result into your script. Towards the top of the script, assign the seed with the line
-`set seed ... # from random.org`
-* Make sure the Stata version is set in the `00_run.do` script, as described above. This ensures that the randomization algorithm is the same, since the randomization algorithm sometimes changes between Stata versions. 
-
-* Use `randtreat` for randomization 
-    <!--- commented this out since it's on SSC
-    * You can install the most up to date version of the program with
     ```stata
-    net install randtreat, from("https://raw.github.com/acarril/randtreat/master/") replace
+    local seed ... // from random.org
     ```
-    --->
+    where `...` is replaced with the number that you got from [random.org](https://www.random.org/)
+* Make sure the Stata version is set in the `00_run.do` script, as described above. This ensures that the randomization algorithm is the same, since the randomization algorithm sometimes changes between Stata versions. 
+* Use the `randtreat` package.
+* Immediately before the line using a randomization function, include ``set seed `seed'``.
+* Build a randomization check: create a second variable a second time with a new name, repeating ``set seed `seed'`` immediately before creating the second variable. Then check that the randomization is identical using `assert`.
+* As a second randomization check, create a separate script that runs the randomization script once (using `do`) but then saves the data set with a different name, then runs it again (with `do`), then reads in the two differently-named data sets from these two runs of the randomization script and ensures that they are identical.
+* Note: if creating two cross-randomized variables, you would not want to repeat ``set seed `seed'`` before creating the second one, otherwise it would use the same assignment as the first.
   
 Above I described how data preparation scripts should be separate from analysis scripts. Randomization scripts should also be separate from data preparation scripts, i.e. any data preparation needed as an input to the randomization should be done in one script and the randomization script itself should read in the input data, create a variable with random assignments, and save a data set with the random assignments.
 
