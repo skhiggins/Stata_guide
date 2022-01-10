@@ -324,19 +324,19 @@ Some additional tips:
 * For debugging, use `set trace on` before running the script. This will show you how Stata is interpreting your code and can help you find the bug.
     * `set tracedepth` is also useful to control how deep into each command's code the trace feature will go. The default when you `set trace on` is `set tracedepth 32000`. If you don't want to print so much of the code Stata is interpreting as it goes through your script, you can use for example `set tracedepth 2`.
 * To run portions of code while you are programming, you can set local macros at the top of the do file and then use `if` conditions to only run some of the chunks of code. This is preferable to highlighting sections of code in the do file and running just those lines. For example:
-```stata
-// Set local macros
-local cleaning  = 0
-local reshape   = 1
+    ```stata
+    // Set local macros
+    local cleaning  = 0
+    local reshape   = 1
 
-// Code
-use "$data/ex_data.dta", clear
+    // Code
+    use "$data/ex_data.dta", clear
 
-if `cleaning' == 1 {
-    // Clean the data
-}
-if `reshape' == 1 {
-    // Reshape the data
-}
-```
+    if `cleaning' == 1 {
+        // Clean the data
+    }
+    if `reshape' == 1 {
+        // Reshape the data
+    }
+    ```
     * In the final replication package, all of these local macros and `if` conditions should either be removed or all set to 1 so that all of the code runs in the replication package without the user needing to adjust the local macros.
