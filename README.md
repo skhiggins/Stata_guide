@@ -189,7 +189,7 @@ if (`04_ex_graph' == 1) do "$scripts/04_ex_graph.do"
     ;
     ```
     
-    * With the same `graph twoway` code, the defaults to `graph_options` can also be changed, for example to add more margin to the right of the graph (which can be useful for example if hte x-axis numbers have more digits) and to increase the size of the points in the scatterplot:
+    * With the same `graph twoway` code, the defaults to `graph_options` can also be changed, for example to add more margin to the right of the graph (which can be useful for example if the x-axis numbers have more digits) and to increase the size of the points in the scatterplot:
     ```stata
     graph_options, ///
         graph_margin(l=0 t=0 b=0 r=5) ///
