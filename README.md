@@ -329,9 +329,10 @@ Some additional tips:
     local cleaning  = 0
     local reshape   = 1
 
-    // Code
+    // Read in ex data
     use "$data/ex_data.dta", clear
 
+    // Wrangle the data
     if (`cleaning' == 1) {
         // Clean the data
     }
