@@ -227,15 +227,18 @@ Once you complete a script, which you might be running line by line while you wo
     ```
   * Close a log file at the end of the script with `log close`.
     
-* All user-written ado files should be kept in the `scripts/programs`.
-* At the beginning of the master script, `00_run.do`, add `adopath ++ "$main/scripts/programs"`. Whenever you open the Stata and you know you will install packages later, you should type below code, 
+* All user-written ado files that are used by your scripts should be kept in the `$scripts/programs` folder.
+    * The `00_run.do` script should include the following code, which will lead to an error if any of the user-written ado files needed for the project are not saved in `$scripts/programs`. After running the code below, if you `ssc install` any programs during the same Stata session, they will correctly install in the project's `$scripts/programs` folder. If you switch to working on a different project, you should close and reopen Stata.
+    ```stata
+    tokenize `"$S_ADO"', parse(";")
+    while `"`1'"' != "" {
+        if `"`1'"'!="BASE" cap adopath - `"`1'"'
+        macro shift
+    }
+    adopath ++ "$MyProject/scripts/programs"
     ```
-    sysdir set PLUS "$main/scripts/programs"
-    sysdir set PERSONAL $main/scripts/programs"
-    ```
-    The above procedures will tell Stata to search for user written ado files in  the folder `scripts/programs`. But the `PLUS` and `PERSONAL` paths you set will be automatically removed when you start a new Stata session. So you need to do it every time you open the Stata and you know you will install packages. You just need to do it once in one Stata session. 
         
-
+<!---
 ## Version control
 
 ### GitHub
@@ -312,27 +315,28 @@ git clone repolink
 8. Now, go back into the Dropbox folder and repeat this step. We need to create a .gitignore file in the Dropbox as well.
 
 Our project structure is complete. We can now make local edits to the scripts and results and push them to Github. All other project members will be able to receive these changes and update their local proc/ files by running the newly synched scripts. The main interactions should be to push local edits to Github. You should **not** be making edits to the scripts located on the Dropbox. If we want to share new raw data, we will need to copy and paste that locally, but it will not cause issues because of the .gitignore file. 
+--->
 
 ## Misc.
 
 Some additional tips:
 
-    * For debugging, use `set trace on` before running the script. This will show you how Stata is interpreting your code and can help you find the bug.
-        * `set tracedepth` is also useful to control how deep into each command's code the trace feature will go. The default when you `set trace on` is `set tracedepth 32000`. If you don't want to print so much of the code Stata is interpreting as it goes through your script, you can use for example `set tracedepth 2`.
-    * To run portions of code while you are programming, you can set local macros at the top of the do file and then use `if` conditions to only run some of the chunks of code. This is preferable to highlighting sections of code in the do file and running just those lines. For example:
-    ```stata
-    // Set local macros
-    local cleaning  = 0
-    local reshape   = 1
+* For debugging, use `set trace on` before running the script. This will show you how Stata is interpreting your code and can help you find the bug.
+    * `set tracedepth` is also useful to control how deep into each command's code the trace feature will go. The default when you `set trace on` is `set tracedepth 32000`. If you don't want to print so much of the code Stata is interpreting as it goes through your script, you can use for example `set tracedepth 2`.
+* To run portions of code while you are programming, you can set local macros at the top of the do file and then use `if` conditions to only run some of the chunks of code. This is preferable to highlighting sections of code in the do file and running just those lines. For example:
+```stata
+// Set local macros
+local cleaning  = 0
+local reshape   = 1
 
-    // Code
-    use "$data/ex_data.dta", clear
+// Code
+use "$data/ex_data.dta", clear
 
-    if `cleaning' == 1 {
-        // Clean the data
-    }
-    if `reshape' == 1 {
-        // Reshape the data
-    }
-    ```
-        * In the final replication package, all of these local macros and `if` conditions should either be removed or all set to 1 so that all of the code runs in the replication package without the user needing to adjust the local macros.
+if `cleaning' == 1 {
+    // Clean the data
+}
+if `reshape' == 1 {
+    // Reshape the data
+}
+```
+    * In the final replication package, all of these local macros and `if` conditions should either be removed or all set to 1 so that all of the code runs in the replication package without the user needing to adjust the local macros.
