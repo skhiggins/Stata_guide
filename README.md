@@ -186,12 +186,14 @@ if (`04_ex_graph' == 1) do "$scripts/04_ex_graph.do"
         legend(off)
     ;
     ```
-        * With the same `graph twoway` code, the defaults to `graph_options` can also be changed, for example to add more margin to the right of the graph (which can be useful for example if hte x-axis numbers have more digits) and to increase the size of the points in the scatterplot:
-        ```stata
-        graph_options, ///
-            graph_margin(l=0 t=0 b=0 r=5) ///
-            marker_size(medlarge)
-        ```
+    
+    * With the same `graph twoway` code, the defaults to `graph_options` can also be changed, for example to add more margin to the right of the graph (which can be useful for example if hte x-axis numbers have more digits) and to increase the size of the points in the scatterplot:
+    ```stata
+    graph_options, ///
+        graph_margin(l=0 t=0 b=0 r=5) ///
+        marker_size(medlarge)
+    ```
+    
     See [`graph_options_reprex.do`](scripts/graph_options_reprex.do) for more examples of its use with changes to its defaults, and look at the function itself to see what the arguments and graph formatting settings that it can change are. (Pull requests welcome to expand it to more use cases.) 
 
 * For graphs with colors, use the `palettes` package `cblind` palette, which also requires `colrspace`, for a colorblind friendly palette. For convenience, my `graph_options` function also creates locals `cblind1` to `cblind9` that correspond to the colors in this palette.      
