@@ -332,10 +332,10 @@ Some additional tips:
     // Code
     use "$data/ex_data.dta", clear
 
-    if `cleaning' == 1 {
+    if (`cleaning' == 1) {
         // Clean the data
     }
-    if `reshape' == 1 {
+    if (`reshape' == 1) {
         // Reshape the data
     }
     ```
