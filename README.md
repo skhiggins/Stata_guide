@@ -179,15 +179,17 @@ if (`04_ex_graph' == 1) do "$scripts/04_ex_graph.do"
 ## Saving files
 
 #### Data sets
-  * Use the Stata commands `save file.dta` and `use file.dta` when saving and reading in data 
-    * To write over a file that already exists, use the `replace` option
-    * To clear out memory when reading in a dataset, use the `clear` option
+* Save data sets with `save file.dta` and read data sets with `use file.dta`.
+    * To write over a file that already exists when saving, use the `replace` option.
+    * If a different data set is already loaded in memory, when reading another data set, use the `clear` option.
   
-  * When dealing with large datasets, there are a couple of things that can make your life easier:
-    * Stata reads faster from its native format
-    * you can read only a select number of observations or variables
-      * `use [varlist] [if] [in] using filename [,clear nolabel]
- * When you just want to save your files temporarily for later use, please use `tempfile`. But `tempfile` will not be saved after the program ends. 
+* When dealing with large datasets, there are a couple of things that can make your life easier:
+    * Stata reads faster from its native `.dta` format.
+    * You can read a subset of the observations or variables using the following syntax:
+    ```stata
+    use [varlist] [if] [in] using filename
+    ```
+* When you just want to save your files temporarily for later use within the same script, use `tempfile`. Note that `tempfile`s will not be saved after the program ends.
       
 #### Graphs
 * Save graphs with `graph export`.
