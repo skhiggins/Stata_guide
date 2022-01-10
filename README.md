@@ -2,6 +2,8 @@
 
 This guide provides instructions for using Stata on research projects. Its purpose is to use with collaborators and research assistants to make code consistent, easier to read, transparent, and reproducible.
 
+Also see my [R Guide](https://github.com/skhiggins/R_guide) and [Python Guide](https://github.com/skhiggins/Python_guide).
+
 ## Style
 For coding style practices, follow the [DIME Analytics Coding Guide](  https://worldbank.github.io/dime-data-handbook/coding.html). There are a few places where I recommend deviating from this style guide:
 
