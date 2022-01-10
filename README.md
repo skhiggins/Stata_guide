@@ -194,7 +194,7 @@ if (`04_ex_graph' == 1) do "$scripts/04_ex_graph.do"
         marker_size(medlarge)
     ```
     
-    See [`graph_options_reprex.do`](scripts/graph_options_reprex.do) for more examples of its use with changes to its defaults, and look at the function itself to see what the arguments and graph formatting settings that it can change are. (Pull requests welcome to expand it to more use cases.) 
+    See [`graph_options_reprex.do`](scripts/graph_options_reprex.do) for more examples of its use with changes to its defaults, and look at the [`graph_options.ado`](scripts/programs/graph_options.ado) function itself to see what the arguments and graph formatting settings that it can change are, as I have not yet written a help file. (Pull requests welcome to expand it to more use cases.) 
 
 * For graphs with colors, use the `palettes` package `cblind` palette, which also requires `colrspace`, for a colorblind friendly palette. For convenience, my `graph_options` function also creates locals `cblind1` to `cblind9` that correspond to the colors in this palette.      
 * For reproducible graphs, always use the `width()` and `height()` options when exporting graphs.
