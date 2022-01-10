@@ -179,7 +179,7 @@ if (`04_ex_graph' == 1) do "$scripts/04_ex_graph.do"
 ## Saving files
 
 #### Data sets
-* Save data sets with `save file.dta` and read data sets with `use file.dta`.
+* Save data sets as `.dta` with `save` and read `.dta` data sets with `use`.
     * To write over a file that already exists when saving, use the `replace` option.
     * If a different data set is already loaded in memory, when reading another data set, use the `clear` option.
   
