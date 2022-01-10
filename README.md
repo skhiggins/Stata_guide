@@ -160,6 +160,7 @@ if (`04_ex_graph' == 1) do "$scripts/04_ex_graph.do"
 //  "$proc/example.dta" // 01_ex_dataprep.R
 // OUTPUTS
 //  "$results/figures/ex_scatter.eps" # figure
+
 ```
 
 ## Graphing
@@ -235,7 +236,7 @@ Once you complete a script, which you might be running line by line while you wo
         if `"`1'"'!="BASE" cap adopath - `"`1'"'
         macro shift
     }
-    adopath ++ "$MyProject/scripts/programs"
+    adopath ++ "$scripts/programs"
     ```
         
 <!---
