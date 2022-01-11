@@ -62,9 +62,9 @@ Keep a "run" script, 00_run.do that lists each script in the order they should b
 
 The 00_run.do script accomplishes three objectives:
 
-    1. Define the global macro for the project's root directory. A code chunk that automatically identifies which user on the team is running the code can also be included so that no code needs to be edited for different team members to run 00_run.do. Nevertheless, one line of code in 00_run.do will need to be edited when someone outside the research team wants to run the replication package.
-    1. Include boilerplate to mimic a fresh Stata session (e.g. clearing any data sets and locals in memory).
-    1. Run particular scripts for the analysis. Which scripts are run is controlled with local macros. In the final replication package, these macros should all be set to 1.
+1. Define the global macro for the project's root directory. A code chunk that automatically identifies which user on the team is running the code can also be included so that no code needs to be edited for different team members to run 00_run.do. Nevertheless, one line of code in 00_run.do will need to be edited when someone outside the research team wants to run the replication package.
+2. Include boilerplate to mimic a fresh Stata session (e.g. clearing any data sets and locals in memory).
+3. Run particular scripts for the analysis. Which scripts are run is controlled with local macros. In the final replication package, these macros should all be set to 1.
     
 Ideally, a user could run `00_run.do` to run the entire analysis from raw data to final results (although this may be infeasible for some projects, e.g. one with multiple confidential data sets that can only be accessed on separate servers).
 
