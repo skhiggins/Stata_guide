@@ -174,6 +174,7 @@ if (`04_ex_graph' == 1) do "$scripts/04_ex_graph.do"
     // Generate local macros for graph formatting (use defaults)
     graph_options
 
+    // Create the graph
     #delimit ;
     graph twoway scatter mpg trunk, 
         title("Cars with more trunk space have worse mpg", `title_options')
@@ -191,9 +192,10 @@ if (`04_ex_graph' == 1) do "$scripts/04_ex_graph.do"
     
     * With the same `graph twoway` code, the defaults to `graph_options` can also be changed, for example to add more margin to the right of the graph (which can be useful for example if the x-axis numbers have more digits) and to increase the size of the points in the scatterplot:
     ```stata
+    // Generate local macros for graph formatting
     graph_options, ///
-        graph_margin(l=0 t=0 b=0 r=5) ///
-        marker_size(medlarge)
+        graph_margin(l=0 t=0 b=0 r=5) /// right margin
+        marker_size(medlarge)          // larger points
     ```
     
     See [`graph_options_reprex.do`](scripts/graph_options_reprex.do) for more examples of its use with changes to its defaults, and look at the [`graph_options.ado`](scripts/programs/graph_options.ado) function itself to see what the arguments and graph formatting settings that it can change are, as I have not yet written a help file. (Pull requests welcome to expand it to more use cases.) 
