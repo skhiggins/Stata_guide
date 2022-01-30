@@ -51,9 +51,9 @@ program define graph_options
     
     if "`labsize'"=="" local labsize medlarge
     if "`bigger_labsize'"=="" local bigger_labsize `labsize'
-    if "`ylabel_options'"=="" local ylabel_options nogrid notick labsize(`labsize') angle(horizontal) `ylabel_format' `y_labgap'
+    if "`ylabel_options'"=="" local ylabel_options nogrid notick labsize(`labsize') angle(horizontal) format(`ylabel_format') labgap(`y_labgap')
     if "`ylabel_options_invis'"=="" local ylabel_options_invis `ylabel_options' labcolor(white)
-    if "`xlabel_options'"=="" local xlabel_options nogrid notick labsize(`labsize') valuelabels `xlabel_format' `x_angle' `x_labgap'
+    if "`xlabel_options'"=="" local xlabel_options nogrid notick labsize(`labsize') valuelabels format(`xlabel_format') angle(`x_angle') labgap(`x_labgap')
     if "`xlabel_options_invis'"=="" local xlabel_options_invis `xlabel_options' labcolor(white)
     if "`xtitle_options'"=="" local xtitle_options size(`labsize') color(black) margin(top) 
     if "`xtitle_options_invis'"=="" local xtitle_options_invis size(`labsize') color(white) margin(top)
