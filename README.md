@@ -24,8 +24,8 @@ Most user-written Stata packages are hosted on Boston College Statistical Softwa
 Generally, within a project folder, we have a subfolder called `analysis` where we are doing data analysis (and other sub-folders like `paper` where the paper draft is saved). Within the `analysis` subfolder, we have: 
   * data - only raw data go in this folder
   * documentation - documentation about the data go in this folder
-    * logs - log files go in this folder
-    * proc - processed data sets go in this folder
+  * logs - log files go in this folder
+  * proc - processed data sets go in this folder
   * results - results go in this folder
     * figures - subfolder for figures
     * tables - subfolder for tables
