@@ -52,6 +52,8 @@ while `"`1'"' != "" {
     macro shift
 }
 adopath ++ "$scripts/programs"
+// Make ssc install and net install save new packages in the same folder
+net set ado "$scripts/programs"
 
 // PRELIMINARIES -------------------------------------------------------------
 // Control which scripts run

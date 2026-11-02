@@ -125,6 +125,8 @@ while `"`1'"' != "" {
     macro shift
 }
 adopath ++ "$scripts/programs"
+// Make ssc install and net install save new packages in the same folder
+net set ado "$scripts/programs"
 
 // PRELIMINARIES -------------------------------------------------------------
 // Control which scripts run
@@ -265,7 +267,7 @@ Once you complete a script, which you might be running line by line while you wo
   * Close a log file at the end of the script with `log close`.
     
 * All user-written ado files that are used by your scripts should be kept in the `$scripts/programs` folder.
-    * The `00_run.do` script should include the following code, which will lead to an error if any of the user-written ado files needed for the project are not saved in `$scripts/programs`. After running the code below (h/t [Julian Reif](https://julianreif.com/guide/)), if you `ssc install` any programs during the same Stata session, they will correctly install in the project's `$scripts/programs` folder. If you switch to working on a different project, you should close and reopen Stata.
+    * The `00_run.do` script should include the following code, which will lead to an error if any of the user-written ado files needed for the project are not saved in `$scripts/programs`. After running the code below (h/t [Julian Reif](https://julianreif.com/guide/)), if you `ssc install` any programs during the same Stata session, they will install in the project's `$scripts/programs` folder. The last line, `net set ado`, sets the folder where Stata installs packages; without it, `ssc install` saves packages in your personal PLUS folder, even after the code above removes that folder from Stata's search path. If you switch to working on a different project, you should close and reopen Stata.
     ```stata
     tokenize `"$S_ADO"', parse(";")
     while `"`1'"' != "" {
@@ -273,6 +275,7 @@ Once you complete a script, which you might be running line by line while you wo
         macro shift
     }
     adopath ++ "$scripts/programs"
+    net set ado "$scripts/programs"
     ```
         
 <!---
