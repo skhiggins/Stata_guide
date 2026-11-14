@@ -46,45 +46,45 @@ program define graph_options
     ];
     #delimit cr
     
-    if "`scheme'"=="" set scheme s1color
+    if `"`scheme'"'=="" set scheme s1color
     else set scheme `scheme'
     
-    if "`labsize'"=="" local labsize medlarge
-    if "`bigger_labsize'"=="" local bigger_labsize `labsize'
-    if "`ylabel_options'"=="" local ylabel_options nogrid notick labsize(`labsize') angle(horizontal) format(`ylabel_format') labgap(`y_labgap')
-    if "`ylabel_options_invis'"=="" local ylabel_options_invis `ylabel_options' labcolor(white)
-    if "`xlabel_options'"=="" local xlabel_options nogrid notick labsize(`labsize') valuelabels format(`xlabel_format') angle(`x_angle') labgap(`x_labgap')
-    if "`xlabel_options_invis'"=="" local xlabel_options_invis `xlabel_options' labcolor(white)
-    if "`xtitle_options'"=="" local xtitle_options size(`labsize') color(black) margin(top) 
-    if "`xtitle_options_invis'"=="" local xtitle_options_invis size(`labsize') color(white) margin(top)
-    if "`ytitle_options'"=="" local ytitle_options size(`labsize') color(black)
-    if "`ytitle_options_invis'"=="" local ytitle_options_invis size(`labsize') color(white)
-    if "`title_options'"=="" local title_options size(`labsize') color(black) 
-    if "`subtitle_options'"=="" local subtitle_options size(`labsize') color(black) margin(bottom) 
-    if "`manual_axis'"=="" local manual_axis lwidth(thin) lcolor(black) lpattern(solid)
-    if "`plot_margin'"=="" local plot_margin l=0 r=2 b=0 t=2
-    if "`plotregion'"=="" local plotregion plotregion(margin(`plot_margin') fcolor(white) lstyle(none) lcolor(white)) 
-    if "`graph_margin'"=="" local graph_margin zero
-    if "`graphregion'"=="" local graphregion graphregion(margin(`graph_margin') fcolor(white) lstyle(none) lcolor(white)) 
-    if "`T_line_options'"=="" local T_line_options lwidth(thin) lcolor(gray) lpattern(dash)
-    if "`marker_color'" == "" local marker_color "black"
-    if "`marker_symbol'" == "" local marker_symbol "O"
-    if "`marker_size'" == "" local marker_size "medium"
-    if "`marker_options'"=="" local marker_options mcolor(`marker_color') msymbol(`marker_symbol') msize(`marker_size')
-    if "`bar_options'"=="" local bar_options lwidth(none) lcolor(gs7) fcolor(gs7)
-    if "`estimate_options_0'"=="" local estimate_options_0  mcolor(gs7)   msymbol(Oh) msize(medlarge)
-    if "`estimate_options_90'"=="" local estimate_options_90  mcolor(gs7)   msymbol(O)  msize(medlarge)
-    if "`estimate_options_95'"=="" local estimate_options_95  mcolor(black) msymbol(O)  msize(medlarge)
-    if "`rcap_options_0'"==""  local rcap_options_0   lcolor(gs7)   lwidth(thin)
-    if "`rcap_options_90'"=="" local rcap_options_90  lcolor(gs7)   lwidth(thin)
-    if "`rcap_options_95'"=="" local rcap_options_95  lcolor(black) lwidth(thin)
-    if "`fit_options'"=="" local fit_options clwidth(medthick) clcolor(blue) fcolor(none) ///
+    if `"`labsize'"'=="" local labsize medlarge
+    if `"`bigger_labsize'"'=="" local bigger_labsize `labsize'
+    if `"`ylabel_options'"'=="" local ylabel_options nogrid notick labsize(`labsize') angle(horizontal) format(`ylabel_format') labgap(`y_labgap')
+    if `"`ylabel_options_invis'"'=="" local ylabel_options_invis `ylabel_options' labcolor(white)
+    if `"`xlabel_options'"'=="" local xlabel_options nogrid notick labsize(`labsize') valuelabels format(`xlabel_format') angle(`x_angle') labgap(`x_labgap')
+    if `"`xlabel_options_invis'"'=="" local xlabel_options_invis `xlabel_options' labcolor(white)
+    if `"`xtitle_options'"'=="" local xtitle_options size(`labsize') color(black) margin(top) 
+    if `"`xtitle_options_invis'"'=="" local xtitle_options_invis size(`labsize') color(white) margin(top)
+    if `"`ytitle_options'"'=="" local ytitle_options size(`labsize') color(black)
+    if `"`ytitle_options_invis'"'=="" local ytitle_options_invis size(`labsize') color(white)
+    if `"`title_options'"'=="" local title_options size(`labsize') color(black) 
+    if `"`subtitle_options'"'=="" local subtitle_options size(`labsize') color(black) margin(bottom) 
+    if `"`manual_axis'"'=="" local manual_axis lwidth(thin) lcolor(black) lpattern(solid)
+    if `"`plot_margin'"'=="" local plot_margin l=0 r=2 b=0 t=2
+    if `"`plotregion'"'=="" local plotregion plotregion(margin(`plot_margin') fcolor(white) lstyle(none) lcolor(white)) 
+    if `"`graph_margin'"'=="" local graph_margin zero
+    if `"`graphregion'"'=="" local graphregion graphregion(margin(`graph_margin') fcolor(white) lstyle(none) lcolor(white)) 
+    if `"`t_line_options'"'=="" local t_line_options lwidth(thin) lcolor(gray) lpattern(dash)
+    if `"`marker_color'"' == "" local marker_color "black"
+    if `"`marker_symbol'"' == "" local marker_symbol "O"
+    if `"`marker_size'"' == "" local marker_size "medium"
+    if `"`marker_options'"'=="" local marker_options mcolor(`marker_color') msymbol(`marker_symbol') msize(`marker_size')
+    if `"`bar_options'"'=="" local bar_options lwidth(none) lcolor(gs7) fcolor(gs7)
+    if `"`estimate_options_0'"'=="" local estimate_options_0  mcolor(gs7)   msymbol(Oh) msize(medlarge)
+    if `"`estimate_options_90'"'=="" local estimate_options_90  mcolor(gs7)   msymbol(O)  msize(medlarge)
+    if `"`estimate_options_95'"'=="" local estimate_options_95  mcolor(black) msymbol(O)  msize(medlarge)
+    if `"`rcap_options_0'"'==""  local rcap_options_0   lcolor(gs7)   lwidth(thin)
+    if `"`rcap_options_90'"'=="" local rcap_options_90  lcolor(gs7)   lwidth(thin)
+    if `"`rcap_options_95'"'=="" local rcap_options_95  lcolor(black) lwidth(thin)
+    if `"`fit_options'"'=="" local fit_options clwidth(medthick) clcolor(blue) fcolor(none) ///
         alcolor(blue*0.5) alpattern(dash) alwidth(thin)
-    if "`legend_cols'"=="" local legend_cols 1
-    if "`legend_position'"=="" local legend_position 6
-    if "`legend_margin'"=="" local legend_margin zero
-    if "`legend_title_options'"=="" local legend_title_options size(`labsize') color(black) margin(l=0 r=0 b=1 t=0) 
-    if "`legend_options'"=="" local legend_options region(lwidth(none)) bmargin(`legend_margin') position(`legend_position') cols(`legend_cols') size(`labsize')
+    if `"`legend_cols'"'=="" local legend_cols 1
+    if `"`legend_position'"'=="" local legend_position 6
+    if `"`legend_margin'"'=="" local legend_margin zero
+    if `"`legend_title_options'"'=="" local legend_title_options size(`labsize') color(black) margin(l=0 r=0 b=1 t=0) 
+    if `"`legend_options'"'=="" local legend_options region(lwidth(none)) bmargin(`legend_margin') position(`legend_position') cols(`legend_cols') size(`labsize')
     
     c_local labsize `labsize'
     c_local bigger_labsize `bigger_labsize'
@@ -105,7 +105,7 @@ program define graph_options
     c_local plotregion `plotregion'
     c_local graphregion `graphregion'
     // To put a line right before treatment
-    c_local T_line_options `T_line_options'
+    c_local T_line_options `t_line_options'
     // Bars
     c_local bar_options `bar_options'
     // General markers
